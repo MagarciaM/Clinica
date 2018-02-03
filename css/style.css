@@ -1,0 +1,125 @@
+body {
+    font-family: 'Roboto', sans-serif;
+}
+
+h1 {
+    text-align: center;
+    font-size: 25pt;
+}
+
+.menu {
+    /*width: 70%;*/
+    margin: 10px auto 10px;
+    background: #1798F3;
+    text-align: center;
+}
+
+
+.menu a {
+    display: inline-block;
+    width: 16%; /* 100% dividido por el número de elementos del menú */
+    box-sizing: border-box;
+    color: #fff;
+    text-decoration: none;
+    font-size: 14pt;
+    border: solid 0.1px #1798F3;
+    padding: 20px 0;
+}
+
+.menu a:hover {
+    background-color: #00B362;
+    /*border: solid 0.1px #FFC009;*/
+}
+
+#contenido {
+    width: 100%;
+    min-height: 500px;
+    margin: 10px auto 10px;
+    background-image: url(../img/fondo.jpg);
+    background-size: 100% 100%;
+}
+
+#contenido a {
+    text-decoration: none;
+    color: black;
+}
+
+#margen {
+    min-height: 30px;
+}
+
+#div_contacto, #div_especialidad {
+    background: rgba(255, 255, 255, 0.7);
+    width: 40%;
+    padding: 5px;
+    text-align: center;
+    border-radius: 10px;
+    margin-left: 7%;
+    font-size: 14pt;
+}
+
+#div_contacto img {
+    width: 80%;
+    border-radius: 10px;
+}
+
+#div_especialidad, #div_medico {
+    display: inline-block;
+}
+
+#div_medico {
+    background: rgba(255, 255, 255, 0.7);
+    width: 40%;
+    padding: 5px;
+    text-align: center;
+    border-radius: 10px;
+    margin-top: 0px;
+    margin-left: 7%;
+    font-size: 14pt;
+}
+
+#div_medico img, .p_medico {
+    display: inline-block;
+}
+
+.medico {
+    margin-bottom: 5%;
+}
+
+.medico img {
+    width: 8%;
+    border-radius: 80%;
+    margin-right: 1%;
+}
+
+.p_medico, .medico img {
+    vertical-align: middle;
+}
+
+.div_horario p{
+    font-size: 13pt;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.div_unaColumna {
+    background: rgba(255, 255, 255, 0.7);
+    width: 50%;
+    padding: 5px;
+    text-align: center;
+    border-radius: 10px;
+    margin: 0px auto;
+    font-size: 14pt;
+}
+
+#calendario {
+    margin: 0px auto;
+    width: 50%;
+}
+
+footer {
+    text-align: center;
+    width: 70%;
+    margin: 10px auto 10px;
+    background-color: #1798F3;
+}
