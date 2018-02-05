@@ -176,22 +176,25 @@ function responder_diasLaborables () {
      if (objAjax.readyState == 4){
         if (objAjax.status == 200) {
 
-            //alert(objAjax.responseText);
-
             var obj_json = JSON.parse(objAjax.responseText);
 
-            alert(obj_json[1].fecha);        
+            // Recorremos el array que nos llega desde php, y deshabilitamos los dias 
+            // en el calendario en el mismo for
 
-            var date = new Date(obj_json[1].fecha);
+            for (var i=0 ; i<obj_json.length ; i++) {
+              
+                var date = new Date(obj_json[i].fecha);
+
+                $('#calendario').multiDatesPicker({
+                    addDisabledDates: [date]
+                });
+            }       
 
             $('#calendario').multiDatesPicker({
                 dateFormat: "yy/mm/dd",
-                //addDisabledDates: [date],
-                toggleDate: [date],
-                altField: '#fechas_seleccionadas'
+                altField: '#fechas_seleccionadas',
+                maxPicks: 1
             });
-
-            //('#calendario').multiDatesPicker('toggleDate', date);
                 
         }
     }
