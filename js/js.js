@@ -146,17 +146,18 @@ function formulario_cita(id_medico) {
 
         $('#form_asignar_dias').append("<br> <label> Selección: </label> <br>");
 
-            $('#form_asignar_dias').append("<input type='text' id='fechas_seleccionadas' required disabled style='visibility:hidden'> <br>");
+            $('#form_asignar_dias').append("<input type='text' id='fechas_seleccionadas_cita' required disabled> <br>");
             $('#form_asignar_dias').append('<div id="calendario"></div>');
 
-            var date = new Date();
+            //var date = new Date();
 
-            $('#calendario').multiDatesPicker({
-                dateFormat: "yy/mm/dd",
-                altField: '#fechas_seleccionadas'
-            });
+            /*$('#calendario').multiDatesPicker({
+                dateFormat: "yy-mm-dd",
+                altField: '#fechas_seleccionadas_cita',
+                maxPicks: 1
+            });*/
 
-        $('#div_elegir_dias').append("<button onlick='seleccionarDia();'> Seleccionar </button>");
+        $('#div_elegir_dias').append("<button onclick='seleccionarDia();'> Seleccionar </button>");
 
         mostrar_diasLaborables(id_medico);
 }
@@ -176,26 +177,45 @@ function responder_diasLaborables () {
      if (objAjax.readyState == 4){
         if (objAjax.status == 200) {
 
+            //var aux = objAjax.responseText;
+
             var obj_json = JSON.parse(objAjax.responseText);
 
-            // Recorremos el array que nos llega desde php, y deshabilitamos los dias 
-            // en el calendario en el mismo for
+            /* Creamos un array con lo que nos devuelve el php, pero de string no de obj Date, se lo pasamos
+            a la funcion para que deshabilite todo menos los dias indicados
+            */
+
+            var array = new Array();
 
             for (var i=0 ; i<obj_json.length ; i++) {
-              
-                var date = new Date(obj_json[i].fecha);
 
-                $('#calendario').multiDatesPicker({
-                    addDisabledDates: [date]
-                });
-            }       
+                array.push(obj_json[i].fecha);
+            }
 
-            $('#calendario').multiDatesPicker({
-                dateFormat: "yy/mm/dd",
-                altField: '#fechas_seleccionadas',
-                maxPicks: 1
-            });
-                
+            $('#calendario').datepicker({
+
+                altField: '#fechas_seleccionadas_cita',
+                maxPicks: 1,
+
+                beforeShowDay: function(date){
+                var string = jQuery.datepicker.formatDate('yy-mm-dd', date);
+                return [ array.indexOf(string) != -1 ]
+                }
+            });  
         }
+    }
+}
+
+function seleccionarDia () {
+    
+    var fecha = $('#fechas_seleccionadas_cita').val();
+
+    if (fecha) {
+        var date = new Date(fecha);
+        alert(date);
+
+        // SELECT * FROM tramo WHERE id_tramo_turno IN (SELECT id_h_turno FROM horario WHERE id_h_medico = '3');
+    } else {
+        alert("Selecione una fecha");
     }
 }

@@ -73,7 +73,7 @@ function genera_formulario_asignar_dias (array_medicos) {
 			var date = new Date();
 
 			$('#calendario').multiDatesPicker({
-				dateFormat: "yy/mm/dd",
+				dateFormat: "yy-mm-dd",
 				//addDisabledDates: [date.setDate(15)],
 				altField: '#fechas_seleccionadas',
 				beforeShowDay: $.datepicker.noWeekends
