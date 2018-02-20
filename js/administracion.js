@@ -13,13 +13,13 @@ function AJAXCrearObj(){
     return objAjax;
 }
 
-// Funcion ejecutada con el boton del menu asignar dias, llama a getMedicos que recoge del servidor 
-//	los medicos y se los pasa en un array a la funcion "genera_formulario_asignar_dias" que genera un form.
+// Funcion ejecutada con el boton del menu "asignar dias", llama a getMedicos que recoge del servidor los medicos
 function asignar_dias() {
 	
 	getMedicos();
 
 }
+
 
 function getMedicos () {
 
@@ -29,6 +29,7 @@ function getMedicos () {
     objAjax.onreadystatechange=responder_medico;
 }
 
+// Funcion que recoge los medicos y se los pasa en un array a la siguiente funcion
 function responder_medico () {
 	if (objAjax.readyState == 4){
         if (objAjax.status == 200) {
@@ -74,15 +75,16 @@ function genera_formulario_asignar_dias (array_medicos) {
 
 			$('#calendario').multiDatesPicker({
 				dateFormat: "yy-mm-dd",
-				//addDisabledDates: [date.setDate(15)],
 				altField: '#fechas_seleccionadas',
+				minDate: 1,
+				firstDay: 1,
 				beforeShowDay: $.datepicker.noWeekends
 			});
 
 		$('#div_asignar_dias').append("<button onclick='enviar();'> Enviar </button>");
 }
 
-// Funcion llamada desde el boton de enviar del formulario
+// Funcion llamada desde el boton de enviar del formulario para asignar los dias
 function enviar () {
 
 	var dates = $('#fechas_seleccionadas').val();
@@ -95,26 +97,39 @@ function enviar () {
 	}
 }
 
-function addDias (idMedico, dias_laborables) {
+// Contructor de un obj que contiene el idMedico y los diasLaborables
+function obj_dias_medico(id_Medico, dias_laborables) {
 
-	var json_dias = JSON.stringify(dias_laborables);
+	var obj = {
+		idMedico: id_Medico,
+		arrayDias: dias_laborables
+	};
 
-	//alert(json_dias);
-
-	objAjax = AJAXCrearObj();
-    objAjax.open('GET', './php/addDias.php?json_dias='+json_dias+'&idMedico='+idMedico, true); // llamamos al php
-    objAjax.send();
-    objAjax.onreadystatechange=responder_addDias;
+	return obj;
 }
 
+// Funcion que va al servidor para insertar los dias que el medico trabaja
+function addDias (id_Medico, dias_laborables) {
+
+	var obj_diasMedico = obj_dias_medico(id_Medico, dias_laborables);
+
+	var obj_json = JSON.stringify(obj_diasMedico);
+
+	objAjax = AJAXCrearObj();
+    //objAjax.open('GET', './php/addDias.php?json_dias='+json_dias+'&idMedico='+idMedico, true); // llamamos al php
+    objAjax.open('GET', './php/addDias.php?obj_json='+obj_json, true); // llamamos al php
+    objAjax.send();
+    objAjax.onreadystatechange=responder_addDias;
+
+}
+
+// Funcion que devuelve la confirmacion del guardado de dias
 function responder_addDias () {
 
 	if (objAjax.readyState == 4){
         if (objAjax.status == 200) {
 
-            //alert(objAjax.responseText);
-
-            if (objAjax.responseText == "true") {
+           	if (objAjax.responseText == "true") {
 
             	mensaje("Guardado Correctamente");
             } else {

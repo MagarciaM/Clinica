@@ -14,7 +14,6 @@ h1 {
     text-align: center;
 }
 
-
 .menu a {
     display: inline-block;
     width: 16%; /* 100% dividido por el número de elementos del menú */
@@ -24,6 +23,7 @@ h1 {
     font-size: 14pt;
     border: solid 0.1px #1798F3;
     padding: 20px 0;
+    cursor: pointer;
 }
 
 .menu a:hover {
@@ -48,7 +48,7 @@ h1 {
     min-height: 30px;
 }
 
-#div_contacto, #div_especialidad {
+#div_contacto, .div_izquierda {
     background: rgba(255, 255, 255, 0.7);
     width: 40%;
     padding: 5px;
@@ -63,11 +63,11 @@ h1 {
     border-radius: 10px;
 }
 
-#div_especialidad, #div_medico {
+.div_izquierda, .div_derecha {
     display: inline-block;
 }
 
-#div_medico {
+.div_derecha {
     background: rgba(255, 255, 255, 0.7);
     width: 40%;
     padding: 5px;
@@ -78,12 +78,13 @@ h1 {
     font-size: 14pt;
 }
 
-#div_medico img, .p_medico {
+.div_derecha img, .p_medico {
     display: inline-block;
 }
 
 .medico {
     margin-bottom: 5%;
+    cursor: pointer;
 }
 
 .medico img {
@@ -115,6 +116,31 @@ h1 {
 #calendario {
     margin: 0px auto;
     width: 50%;
+}
+
+.tramo {
+    padding: 5px;
+    width: 30%;
+    margin: 10px auto;
+    border: solid 2px;
+    border-radius: 10px;
+    border-color: #1798F3;
+    cursor: pointer;
+}
+
+button {
+    color: white;
+    background-color: #1798F3;
+    padding: 1%;
+    border-style: none;
+    border-radius: 10px;
+    margin: 2% auto;
+    min-width: 140px;
+    font-size: 11pt;
+}
+
+input {
+    margin: 1%: 
 }
 
 footer {
