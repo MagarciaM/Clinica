@@ -394,7 +394,7 @@ function div_login_registro () {
         $('#div_login').append('<input type="text" id="login_dni"> <br>');
 
         $('#div_login').append('<label> Contraseña: </label>');
-        $('#div_login').append('<input type="pass" id="login_pass">');
+        $('#div_login').append('<input type="password" id="login_pass"> <br>');
 
         $('#div_login').append('<button onclick="login();"> Acceder </button>');
 
@@ -420,4 +420,52 @@ function div_login_registro () {
         $('#div_registro').append('<input type="text" id="re_direccion"> <br>');
 
         $('#div_registro').append('<button onclick="registrar();"> Registrar </button>');
+}
+
+// Funcion para generar un objUsuario
+function Usuario (dni, pass) {
+    
+    var obj = {
+        dni: dni,
+        pass: pass
+    };
+
+    return obj;  
+}
+
+// Funcion para el login de cliente
+function login () {
+    
+    var value_dni_login = document.getElementById('login_dni').value;
+    var value_pass_login = document.getElementById('login_pass').value;
+
+    if (value_dni_login && value_pass_login) {
+
+        var objUsuario = Usuario(value_dni_login, value_pass_login);
+
+        //alert(objUsuario.dni + objUsuario.pass);
+
+        var objUsuario_json = JSON.stringify(objUsuario);
+    
+        objAjax = AJAXCrearObj();
+        objAjax.open('GET', './php/login_usuario.php?objUsuario_json='+objUsuario_json, true); // llamamos al php
+        objAjax.send();
+        objAjax.onreadystatechange=responder_login;
+
+    } else {
+
+        alert("Rellene todos los campos");
+    }
+}
+
+// Funcion que nos confirma si el usuario es correcto o no
+function responder_login() {
+     if (objAjax.readyState == 4){
+        if (objAjax.status == 200) {
+
+            //var obj_json = JSON.parse(objAjax.responseText);
+            alert(objAjax.responseText);
+
+        }
+    }
 }
