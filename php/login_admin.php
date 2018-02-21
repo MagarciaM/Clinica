@@ -9,7 +9,7 @@
 
 	//print_r($objUsuario->dni);
 
-	$ordenSQL = "SELECT * FROM usuario WHERE nif = '" . $objUsuario->dni . "'";
+	$ordenSQL = "SELECT pass FROM administrador WHERE nombre = '" . $objUsuario->dni . "'";
 	$res = $conexion->query($ordenSQL);
 	$filas = $res->num_rows;
 
@@ -21,16 +21,14 @@
 
 		if ($pass == $objUsuario->pass) {
 
-			$array_json = json_encode($array);
-
-			print_r($array_json);
+			echo "true";
 		} else {
 
 			echo "false";
 		}
 
 	} else {
-
+		
 		echo "false";
 	}
 ?>

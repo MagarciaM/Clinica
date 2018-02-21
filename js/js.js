@@ -141,6 +141,7 @@ function responder_mostrar_medico() {
 
                 // Creamos un objMedico, para enviarlo a la siguiente funcion
                 var objMedico = new Medico(obj_json[i].id_medico, obj_json[i].nombre, obj_json[i].apellidos);
+                //var objMedico_json = JSON.stringify(objMedico);
 
                 $('#div_medico').append('<div id="medico" class="medico" onclick="formulario_cita(`'+ objMedico.idMedico +'`);">');                              
                 $('#medico').append('<img src="./img/logo_medico.jpg">');
@@ -159,7 +160,7 @@ function responder_mostrar_medico() {
 // Funcion que se ejecuta al hacer clic en un medico, y genera un formulario para pedir cita
 function formulario_cita(idMedico) {
 
-    //alert(objMedico.nombre);
+    global_objMedico = idMedico;
 
     $('#contenido').children('div').remove();
     $('#contenido').append('<div id="margen"></div>');
@@ -250,6 +251,7 @@ function _dates_idMedico(fecha, dia, idMedico) {
 function seleccionarDia () {
     
     var fecha = $('#fechas_seleccionadas_cita').val();
+    globalFecha = fecha;
     var idMedico = $('#idMedico').text();
 
     if (fecha) {
@@ -348,6 +350,8 @@ function responder_tramosDisponibles () {
 // Funcion que se encarga de decterta que tramo se ha seleccionado y cambiarlo de color y asignale el id del tramos selecionado a un input
 function selec_tramo(id_tramo) {
     
+    global_objTramo = id_tramo;
+
     var div_tramos = document.getElementById("div_tramos");
     var div_tramo = document.getElementById("tramo"+id_tramo);
     var input_idTramo = document.getElementById("input_idTramo");
@@ -358,7 +362,7 @@ function selec_tramo(id_tramo) {
         tramos[i].setAttribute("style", "border-color: #1798F3;");
     }
     
-    div_tramo.setAttribute("style", "border-color: #00B362");
+    div_tramo.setAttribute("style", "border-color: #00B362; background-color: silver;");
     //alert(id_tramo);
 
     input_idTramo.setAttribute("value", id_tramo);
@@ -402,7 +406,7 @@ function div_login_registro () {
         $('#div_registro').append('<h3> Registro </h3>');
 
         $('#div_registro').append('<label> DNI: </label>');
-        $('#div_registro').append('<f type="text" id="re_dni"> <br>');
+        $('#div_registro').append('<input type="text" id="re_dni"> <br>');
 
         $('#div_registro').append('<label> Nombre: </label>');
         $('#div_registro').append('<input type="text" id="re_nombre"> <br>');
@@ -419,7 +423,7 @@ function div_login_registro () {
         $('#div_registro').append('<label> Dirección: </label>');
         $('#div_registro').append('<input type="text" id="re_direccion"> <br>');
 
-        $('#div_registro').append('<button onclick="registrar();"> Registrar </button>');
+        $('#div_registro').append('<button onclick="registro();"> Registrar </button>');
 }
 
 // Funcion para generar un objUsuario
@@ -446,6 +450,7 @@ function login () {
         //alert(objUsuario.dni + objUsuario.pass);
 
         var objUsuario_json = JSON.stringify(objUsuario);
+        //alert(objUsuario_json);
     
         objAjax = AJAXCrearObj();
         objAjax.open('GET', './php/login_usuario.php?objUsuario_json='+objUsuario_json, true); // llamamos al php
@@ -458,13 +463,158 @@ function login () {
     }
 }
 
-// Funcion que nos confirma si el usuario es correcto o no
+// Funcion que nos confirma si el usuario es correcto o no, el php devuelve true o false
 function responder_login() {
-     if (objAjax.readyState == 4){
-        if (objAjax.status == 200) {
 
-            //var obj_json = JSON.parse(objAjax.responseText);
+    if (objAjax.readyState == 4){
+        if (objAjax.status == 200) {
+            //alert(objAjax.responseText);
+
+            if (objAjax.responseText == "false") {
+
+                alert("Datos introducidos incorrectos");
+
+            } else {
+
+                var obj_json = JSON.parse(objAjax.responseText);
+                global_objUsuario = obj_json;
+                mensaje_boton("Datos de usuario correctos", "resumen_cita()");                
+            }
+
+        }
+    }
+}
+
+// Funcion para generar un objUsuario con todos los datos
+function Usuario_registro (dni, nombre, apellidos, pass, email, direccion) {
+    
+    var obj = {
+        dni: dni,
+        nombre: nombre,
+        apellidos: apellidos,
+        pass: pass,
+        email: email,
+        direccion: direccion
+    };
+
+    return obj;  
+}
+
+//Funcion para el registro del cliente
+function registro() {
+
+    var value_re_dni = document.getElementById('re_dni').value;
+    var value_re_nombre = document.getElementById('re_nombre').value;
+    var value_re_apellidos = document.getElementById('re_apellidos').value;
+    var value_re_pass = document.getElementById('re_pass').value;
+    var value_re_email = document.getElementById('re_email').value;
+    var value_re_direccion = document.getElementById('re_direccion').value;
+
+    if (value_re_dni && value_re_nombre && value_re_apellidos && value_re_pass && value_re_email && value_re_direccion) {
+
+        var objUsuario_registro = Usuario_registro(value_re_dni, value_re_nombre, value_re_apellidos, value_re_pass, value_re_email, value_re_direccion);
+
+        var objUsuario_registro_json = JSON.stringify(objUsuario_registro);
+        //alert(objUsuario_registro_json);
+    
+        objAjax = AJAXCrearObj();
+        objAjax.open('GET', './php/registro_usuario.php?objUsuario_registro_json='+objUsuario_registro_json, true); // llamamos al php
+        objAjax.send();
+        objAjax.onreadystatechange=responder_registro;
+
+    } else {
+
+        alert("Rellene todos los campos de registro");
+    }
+    
+}
+
+// Funcion que confirma el registro del usuario
+function responder_registro() {
+
+    if (objAjax.readyState == 4){
+        if (objAjax.status == 200) {
             alert(objAjax.responseText);
+
+            if (objAjax.responseText == "false") {
+
+                alert("Datos introducidos incorrectos");
+
+            } else {
+
+                mensaje_boton("Usuario añadido correctamente", "resumen_cita()");                
+            }
+
+        }
+    }
+}
+
+// variables para guardar la cita
+var global_objUsuario;
+var global_objMedico;
+var globalFecha;
+var global_objTramo;
+
+
+// Funcion que genera un div de resumen de la cita y la confirma
+function resumen_cita () {
+
+    $('#contenido').children('div').remove();
+    $('#contenido').append('<div id="margen"></div>');
+
+    $('#contenido').append('<div id="resumen_cita" class="div_unaColumna">');
+
+    $('#resumen_cita').append('<h3> Resumen cita </h3>');
+    $('#resumen_cita').append('<p> Datos Cliente </p>');
+    $('#resumen_cita').append('<p><b> DNI: </b> ' + global_objUsuario.nif + '</p>');
+    $('#resumen_cita').append('<p><b> Nombre: </b> ' + global_objUsuario.nombre + '</p>');
+    $('#resumen_cita').append('<p><b> Apellidos: </b> ' + global_objUsuario.apellidos + '</p>');
+
+    $('#resumen_cita').append('<p> Datos Medico' + global_objMedico + '</p>');
+
+    $('#resumen_cita').append('<p><b> Fecha: </b>' + globalFecha + '</p>');
+
+    $('#resumen_cita').append('<p> Horario' + global_objTramo + ' </p>');
+
+    $('#resumen_cita').append('<button onclick="confirmarCita();"> Confirmar cita </button>');
+    
+}
+
+// Funcion para guardar la cita
+function confirmarCita() {
+
+    var cita =  {
+        global_objUsuario: global_objUsuario,
+        global_objMedico: global_objMedico,
+        globalFecha: globalFecha,
+        global_objTramo: global_objTramo
+    };
+
+    var cita_json = JSON.stringify(cita)
+    //alert(cita_json);
+
+    objAjax = AJAXCrearObj();
+    objAjax.open('GET', './php/insertar_cita.php?cita_json='+cita_json, true); // llamamos al php
+    objAjax.send();
+    objAjax.onreadystatechange=responder_confirmarCita;
+    
+}
+
+// Funcion para confirmar que se ha guardado la cita
+function responder_confirmarCita() {
+    
+    if (objAjax.readyState == 4){
+        if (objAjax.status == 200) {
+            alert(objAjax.responseText);
+
+            if (objAjax.responseText == "false") {
+
+                mensaje("Error al guardar la cita");
+
+            } else {
+
+                mensaje("Cita guardada correctamente");                
+            }
 
         }
     }
