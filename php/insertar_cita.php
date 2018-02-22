@@ -22,18 +22,37 @@
 		//print_r($id_diasLaborables);
 	}
 
-	$ordenSQL2 = "INSERT INTO citas VALUES(null, '" . $id_diasLaborables . "', '" . $cita->global_objTramo . "', '" . $cita->global_objUsuario->id_usuario . "');";
+	// Necesitamos extraer el id_usuario del usuario que acaba de registrarse, lo hacemos con una consulta dentro del INSERT
+
+	$ordenSQL2 = "INSERT INTO citas VALUES(null, '" . $id_diasLaborables . "', '" . $cita->global_objTramo . "', (SELECT id_usuario FROM usuario WHERE dni = '" . $cita->global_objUsuario->dni . "'));";
 	//echo $ordenSQL2;
 
 	$res2 = $conexion->query($ordenSQL2);
 
-	if (!$res2) {
+	/*if (!$res2) {
 
 		echo "false";
 
 	} else {
 
 		echo "true";
+	}*/
+
+	// Enviamos el correo al cliente
+
+	$ordenSQL3 = "SELECT * FROM usuario WHERE dni = '" . $cita->global_objUsuario->dni . "'";
+	$res3 = $conexion->query($ordenSQL3);
+	$filas3 = $res3->num_rows;
+
+	if ($filas3 == 1) {
+
+		$array = $res3->fetch_array();
+		$email = $array['email'];
+		//print_r($id_diasLaborables);
 	}
+
+	echo $ordenSQL3;
+
+	mail($email, "Cita Clinica Santa Ana", "Le enviamos este email para confirmar su cita del dia: " + $cita->globalFecha );
 
 ?>

@@ -9,7 +9,7 @@
 
 	//print_r($objUsuario->dni);
 
-	$ordenSQL = "SELECT * FROM usuario WHERE nif = '" . $objUsuario->dni . "'";
+	$ordenSQL = "SELECT * FROM usuario WHERE dni = '" . $objUsuario->dni . "'";
 	$res = $conexion->query($ordenSQL);
 	$filas = $res->num_rows;
 

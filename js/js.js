@@ -271,7 +271,7 @@ function tramosDisponibles (obj_dates_idMedico) {
     var obj_json_date_idMedico = JSON.stringify(obj_dates_idMedico);
     
     objAjax = AJAXCrearObj();
-    objAjax.open('GET', './php/mostrar_tramosDisponibles.php?obj_json_date_idMedico='+obj_json_date_idMedico, true); // llamamos al php
+    objAjax.open('GET', './php/mostrar_tramosDisponibles1.php?obj_json_date_idMedico='+obj_json_date_idMedico, true); // llamamos al php
     objAjax.send();
     objAjax.onreadystatechange=responder_tramosDisponibles;
 }
@@ -281,6 +281,7 @@ function responder_tramosDisponibles () {
     if (objAjax.readyState == 4){
         if (objAjax.status == 200) {
 
+            //alert(objAjax.responseText);
             var obj_json = JSON.parse(objAjax.responseText);
 
             $('#div_tramos').remove();
@@ -301,9 +302,6 @@ function responder_tramosDisponibles () {
             if (obj_json != "error") {
 
                 for (var i=0 ; i<obj_json.length ; i++) {
-            
-                    /*$('#div_tramos').append(obj_json[i].tramo_inicio + ' - ');
-                    $('#div_tramos').append(obj_json[i].tramo_final + '<br>');*/
 
                     var div_tramo = document.createElement("div");
                     var texto_div_tramo = document.createTextNode(obj_json[i].tramo_inicio + " - " + obj_json[i].tramo_final);
@@ -510,9 +508,13 @@ function registro() {
     var value_re_email = document.getElementById('re_email').value;
     var value_re_direccion = document.getElementById('re_direccion').value;
 
+
+
     if (value_re_dni && value_re_nombre && value_re_apellidos && value_re_pass && value_re_email && value_re_direccion) {
 
         var objUsuario_registro = Usuario_registro(value_re_dni, value_re_nombre, value_re_apellidos, value_re_pass, value_re_email, value_re_direccion);
+
+        global_objUsuario = objUsuario_registro;
 
         var objUsuario_registro_json = JSON.stringify(objUsuario_registro);
         //alert(objUsuario_registro_json);
@@ -534,7 +536,7 @@ function responder_registro() {
 
     if (objAjax.readyState == 4){
         if (objAjax.status == 200) {
-            alert(objAjax.responseText);
+            //alert(objAjax.responseText);
 
             if (objAjax.responseText == "false") {
 
@@ -566,7 +568,7 @@ function resumen_cita () {
 
     $('#resumen_cita').append('<h3> Resumen cita </h3>');
     $('#resumen_cita').append('<p> Datos Cliente </p>');
-    $('#resumen_cita').append('<p><b> DNI: </b> ' + global_objUsuario.nif + '</p>');
+    $('#resumen_cita').append('<p><b> DNI: </b> ' + global_objUsuario.dni + '</p>');
     $('#resumen_cita').append('<p><b> Nombre: </b> ' + global_objUsuario.nombre + '</p>');
     $('#resumen_cita').append('<p><b> Apellidos: </b> ' + global_objUsuario.apellidos + '</p>');
 
@@ -607,14 +609,14 @@ function responder_confirmarCita() {
         if (objAjax.status == 200) {
             alert(objAjax.responseText);
 
-            if (objAjax.responseText == "false") {
+            /*if (objAjax.responseText == "false") {
 
                 mensaje("Error al guardar la cita");
 
             } else {
 
-                mensaje("Cita guardada correctamente");                
-            }
+                mensaje("Cita guardada correctamente, se enviará un email.");                
+            }*/
 
         }
     }
