@@ -9,7 +9,7 @@
 
 	//print_r($cita);
 
-	$ordenSQL1 = "SELECT id_diasLaborables FROM dias_laborables WHERE id_medico ='" . $cita->global_objMedico ."' AND fecha = '" . $cita->globalFecha ."';";
+	$ordenSQL1 = "SELECT id_diasLaborables FROM dias_laborables WHERE id_medico ='" . $cita->global_objMedico->idMedico ."' AND fecha = '" . $cita->globalFecha ."';";
 	//echo $ordenSQL;
 
 	$res1 = $conexion->query($ordenSQL1);
@@ -24,7 +24,7 @@
 
 	// Necesitamos extraer el id_usuario del usuario que acaba de registrarse, lo hacemos con una consulta dentro del INSERT
 
-	$ordenSQL2 = "INSERT INTO citas VALUES(null, '" . $id_diasLaborables . "', '" . $cita->global_objTramo . "', (SELECT id_usuario FROM usuario WHERE dni = '" . $cita->global_objUsuario->dni . "'));";
+	$ordenSQL2 = "INSERT INTO citas VALUES(null, '" . $id_diasLaborables . "', '" . $cita->global_objTramo->id_tramo . "', (SELECT id_usuario FROM usuario WHERE dni = '" . $cita->global_objUsuario->dni . "'));";
 	//echo $ordenSQL2;
 
 	$res2 = $conexion->query($ordenSQL2);
@@ -53,6 +53,6 @@
 
 	echo $ordenSQL3;
 
-	mail($email, "Cita Clinica Santa Ana", "Le enviamos este email para confirmar su cita del dia: " + $cita->globalFecha );
+	mail($email, "Cita Clinica Santa Ana", "Le enviamos este email para confirmar su cita del dia: " . $cita->globalFecha . "." );
 
 ?>

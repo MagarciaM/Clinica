@@ -95,16 +95,16 @@ function responder_especialidad() {
     }   
 }
 
-function obj_Medico (idMedico, nombre, apellidos) {
+/*function Medico (idMedico, nombre, apellidos) {
 
     var obj = {
         idMedico: idMedico,
         nombre: nombre,
-        apellidos: apellidos
+        apellidos: apellidos,
     };
 
     return obj;
-} 
+} */
 
 function Medico (idMedico, nombre, apellidos) {
 
@@ -112,6 +112,7 @@ function Medico (idMedico, nombre, apellidos) {
     this.nombre = nombre;
     this.apellidos = apellidos;
 }
+
 
 // Funcion que se ejecuta al hacer clic en una especialidad y va al servidor para extraer los medicos de dicha especialidad
 function mostrar_medico(id_especialidad) {
@@ -141,12 +142,19 @@ function responder_mostrar_medico() {
 
                 // Creamos un objMedico, para enviarlo a la siguiente funcion
                 var objMedico = new Medico(obj_json[i].id_medico, obj_json[i].nombre, obj_json[i].apellidos);
-                //var objMedico_json = JSON.stringify(objMedico);
+    
+                var objMedico_json = JSON.stringify(objMedico);
+                //alert(objMedico);
 
-                $('#div_medico').append('<div id="medico" class="medico" onclick="formulario_cita(`'+ objMedico.idMedico +'`);">');                              
-                $('#medico').append('<img src="./img/logo_medico.jpg">');
-                $('#medico').append('<p class="p_medico">'+objMedico.nombre+' '+objMedico.apellidos+'</p>');
-                $('#medico').append('<div id="horario'+i+'" class="div_horario">');
+                $('#div_medico').append('<div id="medico'+i+'" class="medico">');
+
+                var div_medico = document.getElementById('medico'+i+'');
+                div_medico.setAttribute("onclick", "formulario_cita('" + objMedico_json + "')");
+
+                //$('#div_medico').append('<div id="medico'+i+'" class="medico" onclick="formulario_cita(`'+ objMedico.idMedico +'`);">');                              
+                $('#medico'+i+'').append('<img src="./img/logo_medico.jpg">');
+                $('#medico'+i+'').append('<p class="p_medico">'+objMedico.nombre+' '+objMedico.apellidos+'</p>');
+                $('#medico'+i+'').append('<div id="horario'+i+'" class="div_horario">');
 
                 for (var j=0 ; j<obj_json[i].array_turno.length ; j++) {
                     $('#horario'+i+'').append('<p>'+obj_json[i].array_turno[j].dia_turno+': '+obj_json[i].array_turno[j].horario_inicio+' - '+obj_json[i].array_turno[j].horario_final+'</p>');
@@ -158,9 +166,11 @@ function responder_mostrar_medico() {
 }
 
 // Funcion que se ejecuta al hacer clic en un medico, y genera un formulario para pedir cita
-function formulario_cita(idMedico) {
+function formulario_cita(objMedico_json) {
 
-    global_objMedico = idMedico;
+    var objMedico = JSON.parse(objMedico_json);
+
+    global_objMedico = objMedico; // pasamos el medico a un obj Globall para poder utilizarlo para insertar la cita
 
     $('#contenido').children('div').remove();
     $('#contenido').append('<div id="margen"></div>');
@@ -170,8 +180,8 @@ function formulario_cita(idMedico) {
         $('#div_elegir_dias').append("<h1> Seleccionar dia </h1>");
 
         $('#div_elegir_dias').append("<h3> Medico Seleccionado: </h3>");
-        $('#div_elegir_dias').append("<p id='nombreMedico'> "+ idMedico +" </p>");
-        $('#div_elegir_dias').append("<p id='idMedico' hidden> "+ idMedico +" </p>");
+        $('#div_elegir_dias').append("<p id='nombreMedico'> " + objMedico.nombre + " " + objMedico.apellidos + " </p>");
+        $('#div_elegir_dias').append("<p id='idMedico' hidden> " + objMedico.idMedico + " </p>");
 
         $('#div_elegir_dias').append("<form id='form_asignar_dias'>");
 
@@ -182,7 +192,7 @@ function formulario_cita(idMedico) {
 
         $('#div_elegir_dias').append("<button onclick='seleccionarDia();'> Seleccionar </button>");
 
-        mostrar_diasLaborables(idMedico);
+        mostrar_diasLaborables(objMedico.idMedico);
 }
 
 // Funcion que es llamada desde la anterior y que va a servidor para extraer los dias laborables del medico selecionado
@@ -306,7 +316,9 @@ function responder_tramosDisponibles () {
                     var div_tramo = document.createElement("div");
                     var texto_div_tramo = document.createTextNode(obj_json[i].tramo_inicio + " - " + obj_json[i].tramo_final);
 
-                    div_tramo.setAttribute("onclick", "selec_tramo('" + obj_json[i].id_tramo + "')");
+                    var objTramo_json = JSON.stringify(obj_json[i]);
+
+                    div_tramo.setAttribute("onclick", "selec_tramo('" + objTramo_json + "')");
                     div_tramo.setAttribute("class", "tramo");
                     div_tramo.setAttribute("id", "tramo"+obj_json[i].id_tramo);
 
@@ -346,12 +358,14 @@ function responder_tramosDisponibles () {
 }
 
 // Funcion que se encarga de decterta que tramo se ha seleccionado y cambiarlo de color y asignale el id del tramos selecionado a un input
-function selec_tramo(id_tramo) {
+function selec_tramo(objTramo_json) {
     
-    global_objTramo = id_tramo;
+    var objTramo = JSON.parse(objTramo_json);
+
+    global_objTramo = objTramo;
 
     var div_tramos = document.getElementById("div_tramos");
-    var div_tramo = document.getElementById("tramo"+id_tramo);
+    var div_tramo = document.getElementById("tramo"+objTramo.id_tramo);
     var input_idTramo = document.getElementById("input_idTramo");
 
     var tramos = div_tramos.childNodes;
@@ -363,7 +377,7 @@ function selec_tramo(id_tramo) {
     div_tramo.setAttribute("style", "border-color: #00B362; background-color: silver;");
     //alert(id_tramo);
 
-    input_idTramo.setAttribute("value", id_tramo);
+    input_idTramo.setAttribute("value", objTramo.id_tramo);
 }
 
 // Funcion a la que llama el boton al selecionar el tramo, recoge el id del tramo del input
@@ -567,16 +581,16 @@ function resumen_cita () {
     $('#contenido').append('<div id="resumen_cita" class="div_unaColumna">');
 
     $('#resumen_cita').append('<h3> Resumen cita </h3>');
-    $('#resumen_cita').append('<p> Datos Cliente </p>');
+    //$('#resumen_cita').append('<p> Datos Cliente </p>');
     $('#resumen_cita').append('<p><b> DNI: </b> ' + global_objUsuario.dni + '</p>');
     $('#resumen_cita').append('<p><b> Nombre: </b> ' + global_objUsuario.nombre + '</p>');
     $('#resumen_cita').append('<p><b> Apellidos: </b> ' + global_objUsuario.apellidos + '</p>');
 
-    $('#resumen_cita').append('<p> Datos Medico' + global_objMedico + '</p>');
+    $('#resumen_cita').append('<p><b> Medico: </b>' + global_objMedico.nombre + ' ' + global_objMedico.apellidos + '</p>');
 
     $('#resumen_cita').append('<p><b> Fecha: </b>' + globalFecha + '</p>');
 
-    $('#resumen_cita').append('<p> Horario' + global_objTramo + ' </p>');
+    $('#resumen_cita').append('<p><b> Horario: </b>' + global_objTramo.tramo_inicio + ' </p>');
 
     $('#resumen_cita').append('<button onclick="confirmarCita();"> Confirmar cita </button>');
     
