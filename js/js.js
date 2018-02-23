@@ -41,7 +41,6 @@ function info() {
     objAjax.open('GET', './php/mostrar_info.php', true); // llamamos al php
     objAjax.send();
 	objAjax.onreadystatechange=responder_info_1;
-
 }
 
 // Funcion que crea y muestra dinamicamente la informacion de contacto
@@ -89,8 +88,7 @@ function responder_especialidad() {
 
             for (var i=0 ; i<obj_json.length ; i++) {
                 $('#div_especialidad').append('<div class="medico"><img src="'+obj_json[i].url_img+'"><a onclick="mostrar_medico('+obj_json[i].id_especialidad+');">'+obj_json[i].nombre+'</div>');
-            }
-            
+            }          
         }
     }   
 }
@@ -213,8 +211,6 @@ function responder_diasLaborables () {
      if (objAjax.readyState == 4){
         if (objAjax.status == 200) {
 
-            //var aux = objAjax.responseText;
-
             var obj_json = JSON.parse(objAjax.responseText);
 
             /* Creamos un array con lo que nos devuelve el php, pero de string no de obj Date, se lo pasamos
@@ -270,7 +266,7 @@ function seleccionarDia () {
         var obj_dates_idMedico = _dates_idMedico(fecha, date.getDay(), idMedico);
         tramosDisponibles(obj_dates_idMedico);
 
-    } else {
+    } else {       
         alert("Selecione una fecha");
     }
 }
@@ -291,7 +287,6 @@ function responder_tramosDisponibles () {
     if (objAjax.readyState == 4){
         if (objAjax.status == 200) {
 
-            //alert(objAjax.responseText);
             var obj_json = JSON.parse(objAjax.responseText);
 
             $('#div_tramos').remove();
@@ -352,7 +347,6 @@ function responder_tramosDisponibles () {
                 p.appendChild(texto_p);
                 div_tramos.appendChild(p);
             }
-
         }
     }
 }
@@ -387,14 +381,12 @@ function select_tramo () {
 
     if (valor_input_idTramo) {
 
-        //alert(valor_input_idTramo);
         div_login_registro();
 
     } else {
 
         alert("Seleciona un tramo");
     }
-    
 }
 
 // Funcion que genera el login y el registro de usuario
@@ -406,11 +398,11 @@ function div_login_registro () {
     $('#contenido').append('<div class="div_izquierda" id="div_login">');
         $('#div_login').append('<h3> Login </h3>');
 
-        $('#div_login').append('<label> DNI: </label>');
-        $('#div_login').append('<input type="text" id="login_dni"> <br>');
+        $('#div_login').append('<label> Email: </label>');
+        $('#div_login').append('<input type="text" id="login_email"> <br>');
 
-        $('#div_login').append('<label> Contraseña: </label>');
-        $('#div_login').append('<input type="password" id="login_pass"> <br>');
+        $('#div_login').append('<label> Num Afiliacion: </label>');
+        $('#div_login').append('<input type="password" id="login_num_afiliacion"> <br>');
 
         $('#div_login').append('<button onclick="login();"> Acceder </button>');
 
@@ -426,8 +418,8 @@ function div_login_registro () {
         $('#div_registro').append('<label> Apellidos: </label>');
         $('#div_registro').append('<input type="text" id="re_apellidos"> <br>');
 
-        $('#div_registro').append('<label> Contraseña: </label>');
-        $('#div_registro').append('<input type="pass" id="re_pass"> <br>');
+        $('#div_registro').append('<label> Num Afiliacion: </label>');
+        $('#div_registro').append('<input type="pass" id="re_num_afiliacion"> <br>');
 
         $('#div_registro').append('<label> Email: </label>');
         $('#div_registro').append('<input type="emial" id="re_email"> <br>');
@@ -439,11 +431,11 @@ function div_login_registro () {
 }
 
 // Funcion para generar un objUsuario
-function Usuario (dni, pass) {
+function Usuario (email, num_afiliacion) {
     
     var obj = {
-        dni: dni,
-        pass: pass
+        email: email,
+        num_afiliacion: num_afiliacion
     };
 
     return obj;  
@@ -452,17 +444,14 @@ function Usuario (dni, pass) {
 // Funcion para el login de cliente
 function login () {
     
-    var value_dni_login = document.getElementById('login_dni').value;
-    var value_pass_login = document.getElementById('login_pass').value;
+    var value_email_login = document.getElementById('login_email').value;
+    var value_num_afiliacion_login = document.getElementById('login_num_afiliacion').value;
 
-    if (value_dni_login && value_pass_login) {
+    if (value_email_login && value_num_afiliacion_login) {
 
-        var objUsuario = Usuario(value_dni_login, value_pass_login);
-
-        //alert(objUsuario.dni + objUsuario.pass);
+        var objUsuario = Usuario(value_email_login, value_num_afiliacion_login);
 
         var objUsuario_json = JSON.stringify(objUsuario);
-        //alert(objUsuario_json);
     
         objAjax = AJAXCrearObj();
         objAjax.open('GET', './php/login_usuario.php?objUsuario_json='+objUsuario_json, true); // llamamos al php
@@ -480,7 +469,6 @@ function responder_login() {
 
     if (objAjax.readyState == 4){
         if (objAjax.status == 200) {
-            //alert(objAjax.responseText);
 
             if (objAjax.responseText == "false") {
 
@@ -492,19 +480,18 @@ function responder_login() {
                 global_objUsuario = obj_json;
                 mensaje_boton("Datos de usuario correctos", "resumen_cita()");                
             }
-
         }
     }
 }
 
 // Funcion para generar un objUsuario con todos los datos
-function Usuario_registro (dni, nombre, apellidos, pass, email, direccion) {
+function Usuario_registro (dni, nombre, apellidos, num_afiliacion, email, direccion) {
     
     var obj = {
         dni: dni,
         nombre: nombre,
         apellidos: apellidos,
-        pass: pass,
+        num_afiliacion: num_afiliacion,
         email: email,
         direccion: direccion
     };
@@ -518,20 +505,17 @@ function registro() {
     var value_re_dni = document.getElementById('re_dni').value;
     var value_re_nombre = document.getElementById('re_nombre').value;
     var value_re_apellidos = document.getElementById('re_apellidos').value;
-    var value_re_pass = document.getElementById('re_pass').value;
+    var value_re_num_afiliacion = document.getElementById('re_num_afiliacion').value;
     var value_re_email = document.getElementById('re_email').value;
     var value_re_direccion = document.getElementById('re_direccion').value;
 
+    if (value_re_dni && value_re_nombre && value_re_apellidos && value_re_num_afiliacion && value_re_email && value_re_direccion) {
 
-
-    if (value_re_dni && value_re_nombre && value_re_apellidos && value_re_pass && value_re_email && value_re_direccion) {
-
-        var objUsuario_registro = Usuario_registro(value_re_dni, value_re_nombre, value_re_apellidos, value_re_pass, value_re_email, value_re_direccion);
+        var objUsuario_registro = Usuario_registro(value_re_dni, value_re_nombre, value_re_apellidos, value_re_num_afiliacion, value_re_email, value_re_direccion);
 
         global_objUsuario = objUsuario_registro;
 
         var objUsuario_registro_json = JSON.stringify(objUsuario_registro);
-        //alert(objUsuario_registro_json);
     
         objAjax = AJAXCrearObj();
         objAjax.open('GET', './php/registro_usuario.php?objUsuario_registro_json='+objUsuario_registro_json, true); // llamamos al php
@@ -541,8 +525,7 @@ function registro() {
     } else {
 
         alert("Rellene todos los campos de registro");
-    }
-    
+    } 
 }
 
 // Funcion que confirma el registro del usuario
@@ -550,7 +533,6 @@ function responder_registro() {
 
     if (objAjax.readyState == 4){
         if (objAjax.status == 200) {
-            //alert(objAjax.responseText);
 
             if (objAjax.responseText == "false") {
 
@@ -560,7 +542,6 @@ function responder_registro() {
 
                 mensaje_boton("Usuario añadido correctamente", "resumen_cita()");                
             }
-
         }
     }
 }
@@ -592,8 +573,7 @@ function resumen_cita () {
 
     $('#resumen_cita').append('<p><b> Horario: </b>' + global_objTramo.tramo_inicio + ' </p>');
 
-    $('#resumen_cita').append('<button onclick="confirmarCita();"> Confirmar cita </button>');
-    
+    $('#resumen_cita').append('<button onclick="confirmarCita();"> Confirmar cita </button>'); 
 }
 
 // Funcion para guardar la cita
@@ -607,7 +587,6 @@ function confirmarCita() {
     };
 
     var cita_json = JSON.stringify(cita)
-    //alert(cita_json);
 
     objAjax = AJAXCrearObj();
     objAjax.open('GET', './php/insertar_cita.php?cita_json='+cita_json, true); // llamamos al php
@@ -621,17 +600,140 @@ function responder_confirmarCita() {
     
     if (objAjax.readyState == 4){
         if (objAjax.status == 200) {
-            alert(objAjax.responseText);
 
-            /*if (objAjax.responseText == "false") {
+            if (objAjax.responseText == "false") {
 
                 mensaje("Error al guardar la cita");
 
             } else {
 
                 mensaje("Cita guardada correctamente, se enviará un email.");                
-            }*/
-
+            }
         }
     }
+}
+
+// Funcion del login de usuario
+function div_login_user() {
+    
+    $('#contenido').children('div').remove();
+    $('#contenido').append('<div id="margen"></div>');
+    
+    $('#contenido').append('<div class="div_unaColumna" id="div_login">');
+        $('#div_login').append('<h3> Login Usuario </h3>');
+
+        $('#div_login').append('<label> Email: </label>');
+        $('#div_login').append('<input type="text" id="login_email"> <br>');
+
+        $('#div_login').append('<label> Num Afiliación: </label>');
+        $('#div_login').append('<input type="text" id="login_num_afiliacion"> <br>');
+
+        $('#div_login').append('<button onclick="login_user();"> Acceder </button>');
+}
+
+// Funcion que comprueba el login de administrador
+function login_user() {
+
+    var value_login_email = document.getElementById('login_email').value;
+    var value_login_num_afiliacion = document.getElementById('login_num_afiliacion').value;
+
+    if (value_login_email && value_login_num_afiliacion) {
+
+        var objUsuario = Usuario(value_login_email, value_login_num_afiliacion);
+
+        var objUsuario_json = JSON.stringify(objUsuario);   
+    
+        objAjax = AJAXCrearObj();
+        objAjax.open('GET', './php/login_usuario.php?objUsuario_json='+objUsuario_json, true); // llamamos al php
+        objAjax.send();
+        objAjax.onreadystatechange=responder_login_user;
+
+    } else {
+
+        alert("Rellene todos los campos");
+    }
+}
+
+// Funcion para comprobar el login y redireccionarlo
+function responder_login_user() {
+
+    if (objAjax.readyState == 4){
+        if (objAjax.status == 200) {
+           //alert(objAjax.responseText);
+            if (objAjax.responseText == "false") {
+
+                mensaje_boton("Datos Incorrectos", "div_login_user()");
+
+            } else {
+
+                //div_baja_citas(objAjax.responseText);
+
+                var objUsuario_json = objAjax.responseText;
+                var objUsuario = JSON.parse(objUsuario_json);
+                global_objUsuario = objUsuario;
+
+                // Enviamos a un php un objUsuario para que extraiga un array de citas del mismo
+                objAjax = AJAXCrearObj();
+                objAjax.open('GET', './php/mostrar_citasUsuario.php?objUsuario_json='+objUsuario_json, true); // llamamos al php
+                objAjax.send();
+                objAjax.onreadystatechange=responder_login_user_baja_citas;              
+            }
+        }
+    }
+}
+
+// Funcion que genera la interfaz de baja citas
+function responder_login_user_baja_citas() {
+
+    if (objAjax.readyState == 4){
+        if (objAjax.status == 200) {
+
+            var array_citas = JSON.parse(objAjax.responseText);
+
+            $('#contenido').children('div').remove();
+            $('#contenido').append('<div id="margen"></div>');
+
+            $('#contenido').append('<div class="div_izquierda" id="div_infoUsuario">');
+            $('#div_infoUsuario').append('<h3> Datos Usuario </h3>');
+            $('#div_infoUsuario').append('<p><b> DNI: </b>' + global_objUsuario.dni + '</p>');
+            $('#div_infoUsuario').append('<p><b> Nombre: </b>' + global_objUsuario.nombre + '</p>');
+            $('#div_infoUsuario').append('<p><b> Apellidos: </b>' + global_objUsuario.apellidos + '</p>');
+            $('#div_infoUsuario').append('<p><b> Num Afiliación: </b>' + global_objUsuario.num_afiliacion + '</p>');
+
+            if (array_citas != "false") {
+
+                $('#contenido').append('<div class="div_izquierda" id="div_bajacitas">');
+                $('#div_bajacitas').append('<h3> Citas </h3>');
+                $('#div_bajacitas').append('<table id="tabla_bajacitas">');
+
+                $('#tabla_bajacitas').append('<tr id="tr_titulos">')
+
+                $('#tr_titulos').append('<th> Fecha </th>');
+                $('#tr_titulos').append('<th> Nombre </th>');
+                $('#tr_titulos').append('<th> Apellidos </th>');
+                $('#tr_titulos').append('<th> Hora Inicio </th>');
+                $('#tr_titulos').append('<th> Hora Final </th>');
+
+                for (var i=0 ; i<array_citas.length ; i++) {
+
+                    $('#tabla_bajacitas').append('<tr class="tramo" id="tr_' + i + '">');
+                    
+                    $('#tr_' + i + '').append('<td>' + array_citas[i].fecha + '</td>');
+                    $('#tr_' + i + '').append('<td>' + array_citas[i].nombre + '</td>');
+                    $('#tr_' + i + '').append('<td>' + array_citas[i].apellidos + '</td>');
+                    $('#tr_' + i + '').append('<td>' + array_citas[i].tramo_inicio + '</td>');
+                    $('#tr_' + i + '').append('<td>' + array_citas[i].tramo_final + '</td>');
+                }
+
+            } else {
+
+                $('#contenido').append('<div class="div_izquierda" id="div_bajacitas">');
+                $('#div_bajacitas').append('<h3> Citas </h3>');
+                $('#div_bajacitas').append('<p> Este usuario no tiene citas </p>');
+
+           }
+            
+        }
+    }
+
 }

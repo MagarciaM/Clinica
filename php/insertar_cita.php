@@ -29,15 +29,6 @@
 
 	$res2 = $conexion->query($ordenSQL2);
 
-	/*if (!$res2) {
-
-		echo "false";
-
-	} else {
-
-		echo "true";
-	}*/
-
 	// Enviamos el correo al cliente
 
 	$ordenSQL3 = "SELECT * FROM usuario WHERE dni = '" . $cita->global_objUsuario->dni . "'";
@@ -53,6 +44,15 @@
 
 	echo $ordenSQL3;
 
-	mail($email, "Cita Clinica Santa Ana", "Le enviamos este email para confirmar su cita del dia: " . $cita->globalFecha . "." );
+	$mail = mail($email, "Cita Clinica Santa Ana", "Le enviamos este email para confirmar su cita del dia: " . $cita->globalFecha . " a las " . $cita->global_objTramo->tramo_inicio . "." );
+
+	if (!$res2 && !$mail) {
+
+		echo "false";
+
+	} else {
+
+		echo "true";
+	}
 
 ?>

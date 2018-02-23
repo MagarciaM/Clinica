@@ -3,13 +3,13 @@
 	include './conexion.php';
 	global $conexion;
 
-	$objUsuario_json = $_REQUEST['objUsuario_json'];
+	$admin_json = $_REQUEST['admin_json'];
 	
-	$objUsuario = json_decode($objUsuario_json);
+	$admin = json_decode($admin_json);
 
 	//print_r($objUsuario->dni);
 
-	$ordenSQL = "SELECT pass FROM administrador WHERE nombre = '" . $objUsuario->dni . "'";
+	$ordenSQL = "SELECT pass FROM administrador WHERE nombre = '" . $admin->nombre . "'";
 	$res = $conexion->query($ordenSQL);
 	$filas = $res->num_rows;
 
@@ -19,7 +19,7 @@
 		$pass = $array['pass'];
 		//print_r($pass);
 
-		if ($pass == $objUsuario->pass) {
+		if ($pass == $admin->pass) {
 
 			echo "true";
 		} else {

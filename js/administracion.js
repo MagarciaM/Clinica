@@ -161,17 +161,17 @@ function mensaje_boton (contenido, funcion_boton) {
 		$('#mensaje').append("<button onclick='" + funcion_boton +"'> Continuar </button>");
 }
 
-// Funcino del login de administracion
+// Funcion del login de administracion
 function div_login_admin() {
 	
     $('#contenido').children('div').remove();
     $('#contenido').append('<div id="margen"></div>');
     
     $('#contenido').append('<div class="div_unaColumna" id="div_login">');
-        $('#div_login').append('<h3> Login </h3>');
+        $('#div_login').append('<h3> Login Administrador </h3>');
 
-        $('#div_login').append('<label> DNI: </label>');
-        $('#div_login').append('<input type="text" id="login_dni_admin"> <br>');
+        $('#div_login').append('<label> Nombre: </label>');
+        $('#div_login').append('<input type="text" id="login_nombre_admin"> <br>');
 
         $('#div_login').append('<label> Contraseña: </label>');
         $('#div_login').append('<input type="password" id="login_pass_admin"> <br>');
@@ -179,23 +179,34 @@ function div_login_admin() {
         $('#div_login').append('<button onclick="login_admin();"> Acceder </button>');
 }
 
+// Funcion para generar un objAdministrador
+function Administrador (nombre, pass) {
+    
+    var obj = {
+        nombre: nombre,
+        pass: pass
+    };
+
+    return obj;  
+}
+
 // Funcion que comprueba el login de administrador
 function login_admin() {
 
-    var value_nombre_login_admin = document.getElementById('login_dni_admin').value;
+    var value_nombre_login_admin = document.getElementById('login_nombre_admin').value;
     var value_pass_login_admin = document.getElementById('login_pass_admin').value;
 
     if (value_nombre_login_admin && value_pass_login_admin) {
 
-        var objUsuario = Usuario(value_nombre_login_admin, value_pass_login_admin);
+        var admin = Administrador(value_nombre_login_admin, value_pass_login_admin);
 
         //alert(objUsuario.dni + objUsuario.pass);
 
-        var objUsuario_json = JSON.stringify(objUsuario);
+        var admin_json = JSON.stringify(admin);
         //alert(objUsuario_json);
     
         objAjax = AJAXCrearObj();
-        objAjax.open('GET', './php/login_admin.php?objUsuario_json='+objUsuario_json, true); // llamamos al php
+        objAjax.open('GET', './php/login_admin.php?admin_json='+admin_json, true); // llamamos al php
         objAjax.send();
         objAjax.onreadystatechange=responder_login_admin;
 

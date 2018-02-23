@@ -9,7 +9,7 @@
 
 	//print_r($objUsuario);
 
-	$ordenSQL = "INSERT INTO usuario VALUES(null, '" . $objUsuario->dni . "', '" . $objUsuario->pass . "', '" . $objUsuario->nombre . "', '" . $objUsuario->apellidos . "', '" . $objUsuario->email . "', '" . $objUsuario->direccion . "');";
+	$ordenSQL = "INSERT INTO usuario VALUES(null, '" . $objUsuario->dni . "', '" . $objUsuario->num_afiliacion . "', '" . $objUsuario->nombre . "', '" . $objUsuario->apellidos . "', '" . $objUsuario->email . "', '" . $objUsuario->direccion . "');";
 
 	$res = $conexion->query($ordenSQL);
 
