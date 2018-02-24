@@ -9,10 +9,15 @@
 
 	if ($filas > 0) {
 
-		$array[] = $res->fetch_array();
+		$array = $res->fetch_array();
 
-		$info_clinica = $array[0][1];
-		echo $info_clinica;
+		$info_clinica['nombre'] = $array['nombre'];
+		$info_clinica['telefono'] = $array['telefono'];
+
+		
+		$info_clinica_json = json_encode($info_clinica);
+
+		print_r($info_clinica_json);
 
 	} else {
 

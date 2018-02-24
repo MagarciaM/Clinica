@@ -119,10 +119,10 @@ h1 {
 }
 
 .tramo {
-    padding: 5px;
+    padding: 1px;
     width: 30%;
     margin: 10px auto;
-    border: solid 2px;
+    border: solid 1.5px;
     border-radius: 10px;
     border-color: #1798F3;
     cursor: pointer;
@@ -156,7 +156,13 @@ table {
 
 footer {
     text-align: center;
-    width: 70%;
-    margin: 10px auto 10px;
+    margin: 8px auto 8px;
     background-color: #1798F3;
+}
+
+footer p {
+    color: white;
+    padding: 5px;
+    font-size: 14pt;
+    margin: 0px;
 }

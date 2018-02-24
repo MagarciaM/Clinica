@@ -26,10 +26,15 @@ function responder_load() {
     if (objAjax.readyState == 4){
         if (objAjax.status == 200) {
 
+            var info_clinica = JSON.parse(objAjax.responseText);
+
         	var titulo = document.getElementById('titulo');
-			var texto_titulo = document.createTextNode(objAjax.responseText);
+            var titulo = document.getElementById('titulo');
+			var texto_titulo = document.createTextNode(info_clinica.nombre);
 
 			titulo.appendChild(texto_titulo);
+
+            $('#footer').append('<p>' + info_clinica.nombre + ' - ' + info_clinica.telefono + '</p>');
         } 
     } 
 }
@@ -128,6 +133,8 @@ function responder_mostrar_medico() {
 
     if (objAjax.readyState == 4){
         if (objAjax.status == 200) {
+
+            //alert(objAjax.responseText);
 
             $('#div_medico').remove();
 

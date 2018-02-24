@@ -46,13 +46,24 @@
 		public $horario_inicio;
 		public $horario_final;
 		
-		function __construct($id_turno, $dia_turno, $horario_inicio, $horario_final)
-		{
+		function __construct($id_turno, $n_dia_turno, $horario_inicio, $horario_final) {
 			$this->id_turno = $id_turno;
-			$this->dia_turno = $dia_turno;
+			$this->setDia($n_dia_turno);
 			$this->horario_inicio = $horario_inicio;
 			$this->horario_final = $horario_final;
 		}
+
+		public function setDia($n_dia_turno) {
+
+			$array_dias['1'] = 'Lunes';
+			$array_dias['2'] = 'Martes';
+			$array_dias['3'] = 'Miércoles';
+			$array_dias['4'] = 'Jueves';
+			$array_dias['5'] = 'Viernes';
+
+
+    		$this->dia_turno = $array_dias[$n_dia_turno];
+    	}
 	}
 
 	// extraemos los datos del medico en funcion a su especialidad
