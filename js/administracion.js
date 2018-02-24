@@ -156,6 +156,17 @@ function mensaje_boton (contenido, funcion_boton) {
 		$('#mensaje').append("<button onclick='" + funcion_boton +"'> Continuar </button>");
 }
 
+// Funcion para sacar mensajes por pantalla, con boton que llama a otra funcion y nombre del boton
+function mensaje_boton_nombre (contenido, funcion_boton, nombreBoton) {
+
+	$('#contenido').children('div').remove();
+
+	$('#contenido').append('<div id="margen"></div>');
+	$('#contenido').append("<div id='mensaje' class='div_unaColumna'>");
+		$('#mensaje').append("<h4>" + contenido + "</h4>");
+		$('#mensaje').append("<button onclick='" + funcion_boton +"'> " + nombreBoton +" </button>");
+}
+
 // Funcion del login de administracion
 function div_login_admin() {
 	

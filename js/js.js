@@ -607,10 +607,25 @@ function responder_confirmarCita() {
 
             } else {
 
-                mensaje("Cita guardada correctamente, se enviará un email.");                
+                mensaje_boton_nombre("Cita guardada correctamente, se enviará un email.", "imprimir()", "Imprimir PDF");                
             }
         }
     }
+}
+
+// Funcion para imprimir
+function imprimir() {
+    
+    var obj = new jsPDF('p', 'mm', 'A4');
+
+    obj.text(20, 20, 'Cita - Clinica Santa Ana');
+    obj.text(20, 30, 'Fecha: ' + globalFecha);
+    obj.text(20, 40, 'Hora:' + global_objTramo.tramo_inicio);
+    obj.text(20, 50, 'Medico: ' + global_objMedico.nombre + ' ' + global_objMedico.apellidos);
+    obj.text(20, 60, 'Paciente: ' + global_objUsuario.nombre + ' ' + global_objUsuario.apellidos);
+
+    obj.save("Cita - CLinica Santa Ana.pdf");
+
 }
 
 // Funcion del login de usuario
