@@ -402,7 +402,7 @@ function div_login_registro () {
         $('#div_login').append('<input type="text" id="login_email"> <br>');
 
         $('#div_login').append('<label> Num Afiliacion: </label>');
-        $('#div_login').append('<input type="password" id="login_num_afiliacion"> <br>');
+        $('#div_login').append('<input type="text" id="login_num_afiliacion"> <br>');
 
         $('#div_login').append('<button onclick="login();"> Acceder </button>');
 
@@ -716,7 +716,7 @@ function responder_login_user_baja_citas() {
 
                 for (var i=0 ; i<array_citas.length ; i++) {
 
-                    $('#tabla_bajacitas').append('<tr class="tramo" id="tr_' + i + '">');
+                    $('#tabla_bajacitas').append('<tr class="tr_bajacitas" id="tr_' + i + '" onclick="select_bajacita('+ i +',' + array_citas[i].id_cita + ')">');
                     
                     $('#tr_' + i + '').append('<td>' + array_citas[i].fecha + '</td>');
                     $('#tr_' + i + '').append('<td>' + array_citas[i].nombre + '</td>');
@@ -724,6 +724,9 @@ function responder_login_user_baja_citas() {
                     $('#tr_' + i + '').append('<td>' + array_citas[i].tramo_inicio + '</td>');
                     $('#tr_' + i + '').append('<td>' + array_citas[i].tramo_final + '</td>');
                 }
+
+                $('#div_bajacitas').append('<input type="text" id="input_bajacita" disabled hidden>');
+                $('#div_bajacitas').append('<button onclick="eliminar_cita()"> Eliminar Cita </button>');
 
             } else {
 
@@ -735,5 +738,57 @@ function responder_login_user_baja_citas() {
             
         }
     }
+}
 
+function select_bajacita(idTr, idCita) {
+    
+    // Extraemos la cantidad de hijos que tiene la tabla, y le quitamos uno por el th del titulo
+    var table_bajacitas = document.getElementById('tabla_bajacitas');   
+    var num_tr = table_bajacitas.childNodes;
+
+    for (var i=0 ; i<num_tr.length-1 ; i++) {
+
+        $('#tr_'+i).attr("style", "background: none");
+
+    }
+
+    // Asignamos el valor 
+    $('#input_bajacita').val(idCita);
+    $('#tr_'+idTr).attr("style", "background: silver");
+}
+
+function eliminar_cita() {
+    
+    // Recuperamos el valor selecionado, el idCita para eliminarla
+
+    var idCita = $('#input_bajacita').val();
+
+    if (idCita != "") {
+
+        var idCita_json = JSON.stringify(idCita);
+
+        objAjax = AJAXCrearObj();
+        objAjax.open('GET', './php/eliminar_cita.php?idCita_json='+idCita_json, true); // llamamos al php
+        objAjax.send();
+        objAjax.onreadystatechange=responder_eliminar_cita;  
+
+    } else {
+
+        alert("Selecione una cita");
+    }
+}
+
+function responder_eliminar_cita() {
+
+    if (objAjax.readyState == 4){
+        if (objAjax.status == 200) {
+
+            var res = objAjax.responseText;
+
+            if (res == "true") {
+
+                mensaje_boton("Cita eliminada correctamente", "div_login_user()");
+            }
+        }
+    }
 }

@@ -13,13 +13,9 @@ function AJAXCrearObj(){
     return objAjax;
 }
 
-// Funcion ejecutada con el boton del menu "asignar dias", llama a getMedicos que recoge del servidor los medicos
-function asignar_dias() {
-	
-	getMedicos();
-
-}
-
+// Variable global de array de medicos, y llamamos a la funcion para que lo rellene
+getMedicos();
+var array_medicos;
 
 function getMedicos () {
 
@@ -34,15 +30,14 @@ function responder_medico () {
 	if (objAjax.readyState == 4){
         if (objAjax.status == 200) {
 
-            var obj_json = JSON.parse(objAjax.responseText);
-            //alert(obj_json);
-            genera_formulario_asignar_dias(obj_json);
+            array_medicos = JSON.parse(objAjax.responseText);
+            
         }
     }
 }
 
 // Funcion que genera el formulario para asignar los dias laborables a los medicos
-function genera_formulario_asignar_dias (array_medicos) {
+function asignar_dias () {
 
 	$('#contenido').children('div').remove();
 
@@ -232,6 +227,106 @@ function responder_login_admin() {
             } else {
 
                 mensaje_boton("Datos Incorrectos", "div_login_admin()");
+            }
+
+        }
+    }
+}
+
+//Funcion que genera un el formulario para elegir medio y dia
+function div_listadoCitas_medicoDia() {
+	
+	$('#contenido').children('div').remove();
+    $('#contenido').append('<div id="margen"></div>');
+
+    $('#contenido').append('<div class="div_izquierda" id="div_listadoCitas">');
+    $('#div_listadoCitas').append('<h3> Listado Citas </h3>');
+
+    $('#div_listadoCitas').append("<label> Selecciona Medico </label> <br>");
+
+		$('#div_listadoCitas').append("<select id='select_medicos' onchange='seleccionarMedico()'>");
+
+		for (var i=0 ; i<array_medicos.length ; i++) {
+			$('#select_medicos').append("<option value=" + array_medicos[i].id_medico + "> "+ array_medicos[i].nombre + " " +array_medicos[i].apellidos + " </option>");
+		}
+
+        //$('#div_listadoCitas').append('<div id="calendario"><br></div>');
+        $('#div_listadoCitas').append("<input type='text' id='fechas_seleccionadas_cita' required disabled hidden> <br>");
+}
+
+// Funcion que envia el valor del idMedico
+function seleccionarMedico() {
+
+	// Volvemos a crear el div del calendario para que se no queden dia prefijados
+	$('#calendario').remove();
+	$('#div_listadoCitas').append('<div id="calendario"><br></div>');
+	
+	var idMedico = $('#select_medicos').val();
+	mostrar_diasLaborables(idMedico);
+
+	$('#button_selecionarMedico').remove();
+	$('#div_listadoCitas').append("<button id='button_selecionarMedico' onclick='seleccionarFecha();'> Seleccionar fecha</button>");  
+}
+
+// Funcion que recoge el valor de la fecha selecionada, recibe el idMedico y llama al php para extraer las citas
+function seleccionarFecha() {
+
+	$('#div_listadoCitas_derecha').remove();
+
+	var idMedico = $('#select_medicos').val();
+	var fecha = $('#fechas_seleccionadas_cita').val();
+
+	var idMedico_dia =  {
+		idMedico: idMedico,
+		fecha: fecha
+	}
+
+	var idMedico_dia_json = JSON.stringify(idMedico_dia);
+
+	objAjax = AJAXCrearObj();
+    objAjax.open('GET', './php/mostrar_citasMedicoDia.php?idMedico_dia_json='+idMedico_dia_json, true); // llamamos al php
+    objAjax.send();
+    objAjax.onreadystatechange=responder_citasMedicoDia;	
+}
+
+// Funcion que recibe un array de citas para el medico y en una fecha concreta 
+function responder_citasMedicoDia() {
+	
+	if (objAjax.readyState == 4){
+        if (objAjax.status == 200) {
+
+            var array_citas = JSON.parse(objAjax.responseText);
+
+            if (array_citas != "false") {
+
+                $('#contenido').append('<div class="div_derecha" id="div_listadoCitas_derecha">');
+                $('#div_listadoCitas_derecha').append('<h3> Citas </h3>');
+                $('#div_listadoCitas_derecha').append('<table id="tabla_bajacitas">');
+
+                $('#tabla_bajacitas').append('<tr id="tr_titulos">')
+
+                $('#tr_titulos').append('<th> Num afiliación </th>');
+                $('#tr_titulos').append('<th> Nombre </th>');
+                $('#tr_titulos').append('<th> Apellidos </th>');
+                $('#tr_titulos').append('<th> Hora Inicio </th>');
+                $('#tr_titulos').append('<th> Hora Final </th>');
+
+                for (var i=0 ; i<array_citas.length ; i++) {
+
+                    $('#tabla_bajacitas').append('<tr class="tr_bajacitas" id="tr_' + i + '" onclick="select_bajacita('+ i +',' + array_citas[i].id_cita + ')">');
+                    
+                    $('#tr_' + i + '').append('<td>' + array_citas[i].num_afiliacion + '</td>');
+                    $('#tr_' + i + '').append('<td>' + array_citas[i].nombre + '</td>');
+                    $('#tr_' + i + '').append('<td>' + array_citas[i].apellidos + '</td>');
+                    $('#tr_' + i + '').append('<td>' + array_citas[i].tramo_inicio + '</td>');
+                    $('#tr_' + i + '').append('<td>' + array_citas[i].tramo_final + '</td>');
+                }
+
+            } else {
+
+                $('#contenido').append('<div class="div_izquierda" id="div_listadoCitas_derecha">');
+                $('#div_listadoCitas_derecha').append('<h3> Citas </h3>');
+                $('#div_listadoCitas_derecha').append('<p> Este medico no tiene citas este dia </p>');
             }
 
         }

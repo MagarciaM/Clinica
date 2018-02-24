@@ -143,6 +143,17 @@ input {
     margin: 2%;
 }
 
+table {
+    border-collapse: collapse;
+}
+
+.tr_bajacitas {
+    border: solid 2px;
+    /* border-radius: 10px; */
+    border-color: #1798F3;
+    cursor: pointer;
+}
+
 footer {
     text-align: center;
     width: 70%;
