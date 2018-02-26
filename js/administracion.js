@@ -13,70 +13,62 @@ function AJAXCrearObj(){
     return objAjax;
 }
 
-// Variable global de array de medicos, y llamamos a la funcion para que lo rellene
-getMedicos();
+// Variable global de array de medicos
 var array_medicos;
 
-function getMedicos () {
+// Funcion que va al servidor y genera un array de medicos, recibe como parametro la funcion que queremos que ejecute despues
+function getMedicos (funcion) {
 
  	objAjax = AJAXCrearObj();
     objAjax.open('GET', './php/mostrar_medico.php', true); // llamamos al php
     objAjax.send();
-    objAjax.onreadystatechange=responder_medico;
-}
-
-// Funcion que recoge los medicos y se los pasa en un array a la siguiente funcion
-function responder_medico () {
-	if (objAjax.readyState == 4){
-        if (objAjax.status == 200) {
-
-            array_medicos = JSON.parse(objAjax.responseText);
-            
-        }
-    }
+    objAjax.onreadystatechange=funcion;
 }
 
 // Funcion que genera el formulario para asignar los dias laborables a los medicos
 function asignar_dias () {
 
-	$('#contenido').children('div').remove();
+    if (objAjax.readyState == 4){
+        if (objAjax.status == 200) {
 
-	$('#contenido').append('<div id="margen"></div>');
-	$('#contenido').append("<div id='div_asignar_dias' class='div_unaColumna'>");
+            array_medicos = JSON.parse(objAjax.responseText);
 
-		$('#div_asignar_dias').append("<h1> Asignación dias laborables </h1>");
+            $('#contenido').children('div').remove();
 
-		$('#div_asignar_dias').append("<form id='form_asignar_dias'>");
+            $('#contenido').append('<div id="margen"></div>');
+            $('#contenido').append("<div id='div_asignar_dias' class='div_unaColumna'>");
 
-			/*$('#form_asignar_dias').append("<label> Selecciona Especialidad </label> <br>");
+            $('#div_asignar_dias').append("<h1> Asignación dias laborables </h1>");
 
-			$('#form_asignar_dias').append("<select id='select_especialidad'>");
-				$('#select_especialidad').append("<option selected> Ej: Cardiología </option>");*/
+            $('#div_asignar_dias').append("<form id='form_asignar_dias'>");
 
-			$('#form_asignar_dias').append("<label> Selecciona Medico </label> <br>");
+            $('#form_asignar_dias').append("<label> Selecciona Medico </label> <br>");
 
-			$('#form_asignar_dias').append("<select id='select_medicos'>");
+            $('#form_asignar_dias').append("<select id='select_medicos'>");
 
-			for (var i=0 ; i<array_medicos.length ; i++) {
-				$('#select_medicos').append("<option value=" + array_medicos[i].id_medico + "> "+ array_medicos[i].nombre + " " +array_medicos[i].apellidos + " </option>");
-			}
+            for (var i=0 ; i<array_medicos.length ; i++) {
+                $('#select_medicos').append("<option value=" + array_medicos[i].id_medico + "> "+ array_medicos[i].nombre + " " +array_medicos[i].apellidos + " </option>");
+            }
 
-			$('#form_asignar_dias').append("<br> <label> Selecciona dias laborables </label> <br>");
+            $('#form_asignar_dias').append("<br> <label> Selecciona dias laborables </label> <br>");
 
-			$('#form_asignar_dias').append("<input type='text' id='fechas_seleccionadas' required disabled style='visibility:hidden'> <br>");
-			$('#form_asignar_dias').append('<div id="calendario"></div>');
+            $('#form_asignar_dias').append("<input type='text' id='fechas_seleccionadas' required disabled style='visibility:hidden'> <br>");
+            $('#form_asignar_dias').append('<div id="calendario"></div>');
 
-			var date = new Date();
+            var date = new Date();
 
-			$('#calendario').multiDatesPicker({
-				dateFormat: "yy-mm-dd",
-				altField: '#fechas_seleccionadas',
-				minDate: 1,
-				firstDay: 1,
-				beforeShowDay: $.datepicker.noWeekends
-			});
+            $('#calendario').multiDatesPicker({
+                dateFormat: "yy-mm-dd",
+                altField: '#fechas_seleccionadas',
+                minDate: 1,
+                firstDay: 1,
+                beforeShowDay: $.datepicker.noWeekends
+            });
 
-		$('#div_asignar_dias').append("<button onclick='enviar();'> Enviar </button>");
+            $('#div_asignar_dias').append("<button onclick='enviar();'> Enviar </button>");
+            
+        }
+    }
 }
 
 // Funcion llamada desde el boton de enviar del formulario para asignar los dias
@@ -246,23 +238,30 @@ function responder_login_admin() {
 
 //Funcion que genera un el formulario para elegir medio y dia
 function div_listadoCitas_medicoDia() {
-	
-	$('#contenido').children('div').remove();
-    $('#contenido').append('<div id="margen"></div>');
 
-    $('#contenido').append('<div class="div_izquierda" id="div_listadoCitas">');
-    $('#div_listadoCitas').append('<h3> Listado Citas </h3>');
+    if (objAjax.readyState == 4){
+        if (objAjax.status == 200) {
 
-    $('#div_listadoCitas').append("<label> Selecciona Medico </label> <br>");
+            array_medicos = JSON.parse(objAjax.responseText);
 
-		$('#div_listadoCitas').append("<select id='select_medicos' onchange='seleccionarMedico()'>");
+        	$('#contenido').children('div').remove();
+            $('#contenido').append('<div id="margen"></div>');
 
-		for (var i=0 ; i<array_medicos.length ; i++) {
-			$('#select_medicos').append("<option value=" + array_medicos[i].id_medico + "> "+ array_medicos[i].nombre + " " +array_medicos[i].apellidos + " </option>");
-		}
+            $('#contenido').append('<div class="div_izquierda" id="div_listadoCitas">');
+            $('#div_listadoCitas').append('<h3> Listado Citas </h3>');
 
-        //$('#div_listadoCitas').append('<div id="calendario"><br></div>');
-        $('#div_listadoCitas').append("<input type='text' id='fechas_seleccionadas_cita' required disabled hidden> <br>");
+            $('#div_listadoCitas').append("<label> Selecciona Medico </label> <br>");
+
+        		$('#div_listadoCitas').append("<select id='select_medicos' onchange='seleccionarMedico()'>");
+
+        		for (var i=0 ; i<array_medicos.length ; i++) {
+        			$('#select_medicos').append("<option value=" + array_medicos[i].id_medico + "> "+ array_medicos[i].nombre + " " +array_medicos[i].apellidos + " </option>");
+        		}
+
+                //$('#div_listadoCitas').append('<div id="calendario"><br></div>');
+                $('#div_listadoCitas').append("<input type='text' id='fechas_seleccionadas_cita' required disabled hidden> <br>");
+        }
+    }
 }
 
 // Funcion que envia el valor del idMedico

@@ -33,7 +33,7 @@ h1 {
 
 #contenido {
     width: 100%;
-    min-height: 500px;
+    min-height: 560px;
     margin: 10px auto 10px;
     background-image: url(../img/fondo.jpg);
     background-size: 100% 100%;
@@ -64,7 +64,9 @@ h1 {
 }
 
 .div_izquierda, .div_derecha {
-    display: inline-block;
+    /*display: inline-block;*/
+    float: left;
+    max-height: 520px;
 }
 
 .div_derecha {
@@ -119,13 +121,18 @@ h1 {
 }
 
 .tramo {
-    padding: 1px;
-    width: 30%;
+    padding: 3px;
+    width: 35%;
     margin: 10px auto;
-    border: solid 1.5px;
+    border: solid 2px;
     border-radius: 10px;
     border-color: #1798F3;
     cursor: pointer;
+}
+
+#div_tramos {
+    overflow-y: scroll;
+    overflow-x: hidden;
 }
 
 button {
