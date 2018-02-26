@@ -48,7 +48,7 @@ h1 {
     min-height: 30px;
 }
 
-#div_contacto, .div_izquierda {
+.div_izquierda {
     background: rgba(255, 255, 255, 0.7);
     width: 40%;
     padding: 5px;
@@ -59,7 +59,7 @@ h1 {
 }
 
 #div_contacto img {
-    width: 80%;
+    width: 40%;
     border-radius: 10px;
 }
 
@@ -159,6 +159,16 @@ table {
     /* border-radius: 10px; */
     border-color: #1798F3;
     cursor: pointer;
+}
+
+.div_central {
+    background: rgba(255, 255, 255, 0.7);
+    width: 70%;
+    padding: 5px;
+    text-align: center;
+    border-radius: 10px;
+    margin: 4% auto;
+    font-size: 14pt;
 }
 
 footer {

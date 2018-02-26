@@ -35,6 +35,13 @@ function responder_load() {
 			titulo.appendChild(texto_titulo);
 
             $('#footer').append('<p>' + info_clinica.nombre + ' - ' + info_clinica.telefono + '</p>');
+
+            $('#contenido').children('div').remove();
+            $('#contenido').append('<div id="margen"></div>');
+            $('#contenido').append('<div id="div_home" class="div_central">');
+            $('#div_home').append('<h1> Bienvenido a la ' + info_clinica.nombre + '</h1>');
+            $('#div_home').append('<h4> La salud es lo primero </h4>');
+
         } 
     } 
 }
@@ -58,7 +65,7 @@ function responder_info_1() {
             $('#contenido').children('div').remove();
 
             $('#contenido').append('<div id="margen"></div>');
-            $('#contenido').append('<div id="div_contacto">');
+            $('#contenido').append('<div id="div_contacto" class="div_central">');
             $('#div_contacto').append('<h2> Información de Contacto </h2>');
             $('#div_contacto').append('<p><b> Nombre : </b> '+obj_json[0].nombre+'</p>');
             $('#div_contacto').append('<p><b> Dirección : </b> '+obj_json[0].direccion+'</p>');
