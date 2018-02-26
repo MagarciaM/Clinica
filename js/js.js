@@ -41,6 +41,7 @@ function responder_load() {
             $('#contenido').append('<div id="div_home" class="div_central">');
             $('#div_home').append('<h1> Bienvenido a la ' + info_clinica.nombre + '</h1>');
             $('#div_home').append('<h4> La salud es lo primero </h4>');
+            $('#div_home').append('<img src="./img/img_home.jpg">');
 
         } 
     } 
